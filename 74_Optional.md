@@ -183,4 +183,109 @@ Si **optName** contiene algun valor (como **"Google"**), se llama a la expresion
 2. Implementa el metodo **getValue**. Deberia leer un **String** de la consol y construir un objeto **Optional<String>** con el valor. Si la entrada es igual a **emtpy** crea un **Optional** vacio.
 
     ~~~java
-    
+    class Main {
+        public static void main(String[] args) {
+            InputStringReader reader = new InputStringReader();        
+            Optional<String> value = reader.getValue();
+            if (value.isPresent()) {
+                System.out.println("Value is present: " + value.get());
+            } else {
+                System.out.println("Value is empty");
+            }
+        }
+    }
+
+    class InputStringReader {
+        public Optional<String> getValue() {
+            Scanner scanner = new Scanner(System.in);
+            String value = scanner.nextLine();
+            Optional<String> optional = Optional.empty();
+            if (!Objects.equals(value, "empty")) {
+                optional = Optional.of(value);
+            }
+            return optional;
+        }
+    }
+    ~~~
+
+3. Escribe un codigo en el **Main** que imprime el valor de **provider.getValue** si no es **null**.
+
+    ~~~java
+    class Main {
+        public static void main(String[] args) {
+            ValueProvider provider = new ValueProvider();
+            Optional<String> value = provider.getValue();
+
+            // Solucion 1
+            if (value.isPresent()) {
+                System.out.println(value.get());
+            }
+
+            // Solucion 2
+            value.ifPresent(System.out::println);
+        }
+    }
+
+    class ValueProvider {
+        private Optional<String> inputOpt;
+        public Optional<String> getValue() {
+            if (inputOpt.isEmpty()) {
+                java.util.Scanner scanner = new java.util.Scanner(System.in);
+                String input = scanner.next();
+                inputOpt = "null".equals(input) ? Optional.empty() : Optional.of(input);
+            }
+
+            return inputOpt;
+        }
+    }
+    ~~~
+
+4. Debe completar el codigo para imprimir el nombre de la persona y su direccion (separados por la frase **lives at**) si la direccion esta presente y si no lo esta imprimir **"Unknown"**.
+
+    ~~~java
+    public class Main {
+
+        public static void main(String[] args) {
+            Scanner scanner = new Scanner(System.in);
+
+            String name = scanner.nextLine();
+            Optional<String> optAddress = AddressBook.getAddressByName(name);
+
+            // solucion 1
+            optAddress.ifPresentOrElse(
+                    address -> System.out.println(name + " lives at " + address),
+                    () -> System.out.println("Unknown")
+            );
+
+            // solucion 2
+            System.out.println(optAddress.isPresent() ? "%s lives at %s".formatted(name, optAddress.get()) : "Unknown");
+        }
+    }
+
+    class AddressBook {
+        private static final Map<String, String> namesToAddresses = new HashMap<>();
+
+        static {
+            namesToAddresses.put("Pansy Barrows", "63 Shub Farm Drive, Cumberland, RI 02864");
+            namesToAddresses.put("Kevin Bolyard", "9526 Front Court, Hartsville, SC 29550");
+            namesToAddresses.put("Earl Riley", "9197 Helen Street, West Bloomfield, MI 48322");
+            namesToAddresses.put("Christina Doss", "7 Lincoln St., Matawan, NJ 07747");
+        }
+
+        static Optional<String> getAddressByName(String name) {
+            return Optional.ofNullable(namesToAddresses.get(name));
+        }
+    }
+    ~~~
+
+5. Que es **Optional**?
+
+    - Es una contenedor que puede estar vacio o lleno con un valor
+
+6. **Optional** fue creado para evitar que excepciones?
+
+    - **NullPointerException**
+
+7. Cual metodo se debe utilizar para crear un **Optional** basado en un objeto que podria ser **null**?
+
+    - **orNullable(object)**
