@@ -119,7 +119,7 @@ class Message {
     @Override
     public String toString() {
         return created.toString() + " " + from + " wrote: " +
-                content + " (" + lieks + ")";
+                content + " (" + likes + ")";
     }
 }
 ~~~
@@ -252,3 +252,153 @@ También, **Comparator** sirve como una extensión y permite personalizar el pro
     ~~~
 
 2. Implemente un metodo que tome una lista y la organice en orden lexicografico en reversa.
+
+    ~~~java
+    class Utils {
+
+        public static void sortStrings(List<String> strings) {
+            strings.sort(Comparator.reverseOrder());
+        }
+    }
+    ~~~
+
+3. Tiene una clase **User**, debe implementar el comparador **UserComparator** que se usa para ordenar los usuarios.
+
+    ~~~java
+    class User {
+        private String name;
+
+        public User(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
+    class UserComparator implements Comparator<User> {
+
+        @Override
+        public int compare(User user1, User user2) {
+            return user1.getName().compareTo(user2.getName());
+        }
+    }
+
+    class Main {
+
+        public static void main(String[] args) {
+
+            User user1 = new User("Andres");
+            User user2 = new User("Christian");
+            List<User> users = new ArrayList<>();
+            users.add(user2);
+            users.add(user1);
+            System.out.println(users); // [Christian, Andres]
+            users.sort(new UserComparator());
+            System.out.println(users); // [Andres, Christian]
+        }
+    }
+    ~~~
+
+4. Imagine que esta desarrollando una solucion backend para una tienda de videjuegos en linea y ha diseñado algunas entidades. Al implementar la logica comercial, eventualmente necesitara comparar y clasificar clientes, videojuegos y calificaciones. Seleccione cual interfaz de Java se ajusta mejor para comparar instancias de esas entidades.
+
+    ~~~java
+    class Rating {
+        private int userRating;
+    }
+
+    class VideoGame {
+        private String title;
+        private List<String> keywords;
+        private int copiesSold;
+        private double price;
+        private Rating rating;
+    }
+
+    class Customer {
+        private String userName;
+        private List<VideoGame> games;
+        private Map<Rating, VideoGame> reviews;
+        private boolean premium;
+    }
+    // Rating -> Comparable
+    // VideoGame -> Comparator
+    // Customer -> Comparator
+    ~~~
+
+5. Seleccione las declaraciones correctas sobre el metodo **compare**.
+
+    - Retorna una entero positivo si el primer argumento es mayour que el segundo argumento
+    - Retorna un numero entero negativo cuando el primer argumento es menor que el segundo.
+
+6. Escriba un metodo que toma una lista de numeros enteros y retorne una lista ordenada, los numeros impares deben estar al principio en orden ascendente y los numeros pares deben estar al final en orden descendente.
+
+    ~~~java
+    class Utils {
+
+        public static List<Integer> sortOddEven(List<Integer> numbers) {
+
+            List<Integer> finalOrder = new ArrayList<>();
+            List<Integer> oddNumbers = new ArrayList<>();
+            List<Integer> evenNumbers = new ArrayList<>();
+            for (Integer num : numbers) {
+                if (num % 2 == 0)
+                    evenNumbers.add(num);
+                else
+                    oddNumbers.add(num);
+            }
+            oddNumbers.sort(Comparator.naturalOrder());
+            evenNumbers.sort(Comparator.reverseOrder());
+
+            finalOrder.addAll(oddNumbers);
+            finalOrder.addAll(evenNumbers);
+
+            return finalOrder;
+        }
+    }
+    ~~~
+
+7. Debe ordenar una lista de usuario por su nombre, pero si tienen el mismo nombre, debe ordenarlos por su edad.
+
+    ~~~java
+    class User {
+        private String name;
+        private int age;
+
+        public User(String name, int age) {
+            this.name = name;
+            this.age = age;
+        }
+
+        @Override
+        public String toString() {
+            return name + "=" + age;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getAge() {
+            return age;
+        }
+    }
+
+    class Utils {
+
+        public static void sortUsers(List<User> users) {
+            users.sort(Comparator
+                    .comparing(User::getName)
+                        .reversed()
+                    .thenComparing(User::getAge)
+                        .reversed()
+            );
+        }
+    }
+    ~~~
