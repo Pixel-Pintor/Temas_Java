@@ -1,8 +1,12 @@
 # Expresiones Switch
+
 Las declaraciones `switch` se usan a menudo para evitar largas cadenas de `if-else`, haciendo que el codigo sea mas legible. Dicho esto, las declaraciones de cambio pueden ser detalladas a su manera, y los requisitos estrictos para colocar `break` a menudo los hace propensos a errores.
+
 ## Declaraciones Switch frente a expresiones Switch
+
 La principal diferencia entre una expresion Switch y una declaracion Switch es que mientras que una declaracion se puede utilizar para actualizar el valor de una variable predefinida, una expresion se asigna a una variable. Esto es posible porque una expresion se evalua a un valor especifico. Ademas, las expresioens introdujeron la nueva **sintaxis de flecha** que condensa el codigo, lo hace mas legible y elimina la necesidad de declaraciones `break`. Veamos un ejemplo que muestra estas diferencias.  
 Comenzamos con una enumeracion de varias cosas que van a ser probadas. Nuestra declaracion Switch y las expresiones Switch van a asignar una calificacion de sabor como un numero del 1 al 10. Primero, veremos como esto se escribira comunmente como una declaracion Switch:
+
 ~~~java
 private enum ThingsToTaste {BROCCOLI, STEAK, SUGAR, DIRT, MEATBALLS, CHOCOLATE}
 
@@ -30,7 +34,9 @@ switch (taste) {
 }
 System.out.println(taste + ": " + tasteValue);
 ~~~
+
 Ahora vamos a contrastar esto con una expresion Switch.
+
 ~~~java
 int tasteValue = switch (taste) {
     case SUGAR, PIZZA, CHOCOLATE -> 10;
@@ -40,14 +46,19 @@ int tasteValue = switch (taste) {
     default -> throw new IllegalStateException("Invalid tastable object: " + taste);
 }
 ~~~
+
 Tenga en cuenta que no usa sentencias `break`, la nueva sintaxis de flecha lo reemplaza. La flecha indica que una vez alcanzado el valor se deba asignar a la variable `tasteValue` y luego se detiene. Todavia podemos tener un caso `default` que puede asignar una numero entero o arrojar una excepcion. De hecho, hay tres posibilidades de lo que puede venir despues de la flecha.
+
 - Una valor del tipo con el que se declaro la expresion Switch.
 - Lanzar una nueva excepcion.
 - Un bloque de codigo que se evalua como un valor del tipo correcto.  
 
 Dado que las expresiones Switch se evaluan en un valor especifico de un tipo especificado, debe tener en cuenta todos los casos posibles.
+
 ## Variaciones de las expresiones Switch
+
 Java 13 introdujo la palabra `yield` que se puede usar dentro de dos puntos `case` para identificar el valor de `case` en la declaracion. Tambien reemplaza `break` y elimina la necesidad de mencionar explicitamente la variable al que se asigna el valor. Si va a utilizar dos puntos en su `case`, usar `yield` es la mejor opcion.
+
 ~~~java
 int tasteValue = switch (taste) {
     case SUGAR:
@@ -65,8 +76,10 @@ int tasteValue = switch (taste) {
         throw new IllegalStateException("Invalidad tastable object: " + taste);
 }
 ~~~
+
 La palabra `yield` no se puede usar dentro de una declaracion `switch`. Igualmente, `break` no se puede usar dentro de una expresion `switch`. Por lo tanto `yield` ayuda a garantizar que el lector de su codigo no olvide que tipo de `switch` esta leyendo.  
-Tambien hay una opcion intermedia que usa la nueva sintaxis de flecha pero coloca un bloque de codigo con un `yield` en ella ala derecha de la flecha. Esto puede parecer innecesariamente detallado en comparacion con el primer ejemplo de sintaxis de mayusculas y minusculas que se meustra arriba, pero hay situaciones en las que esta forma larga tiene algunas ventajas. Los `yield` debe ser la ultima linea en el bloque de codigo, pero puede llamar a otras funciones en las lineas anteriores. Un ejempli simple de esto seria imprimir el valor que se va a entrgar a la consola justo antes de entregarla, como puede ver acontinuacion.
+Tambien hay una opcion intermedia que usa la nueva sintaxis de flecha pero coloca un bloque de codigo con un `yield` en ella ala derecha de la flecha. Esto puede parecer innecesariamente detallado en comparacion con el primer ejemplo de sintaxis de mayusculas y minusculas que se meustra arriba, pero hay situaciones en las que esta forma larga tiene algunas ventajas. Los `yield` debe ser la ultima linea en el bloque de codigo, pero puede llamar a otras funciones en las lineas anteriores. Un ejempli simple de esto seria imprimir el valor que se va a entrgar a la consola justo antes de entregarla, como puede ver a continuacion.
+
 ~~~java
 tasteValue = switch (taste) {
     case SUGAR, PIZZA, CHOCOLATE -> {
@@ -90,22 +103,144 @@ tasteValue = switch (taste) {
     }
 }
 ~~~
+
+---
+
 ## Ejercicios
+
 1. Complete el codigo.
-~~~java
-int numberOfHamburgersToEat = switch (howHungryAmI) {
-    case 1, 2, 3 -> 0;
-    case 4, 5, 6 -> {
-        yield 1;
+
+    ~~~java
+    int numberOfHamburgersToEat = switch (howHungryAmI) {
+        case 1, 2, 3 -> 0;
+        case 4, 5, 6 -> {
+            yield 1;
+        }
+        case 7, 8, 9 -> {
+            System.out.println(2);
+            yield 2;
+        }
+        case 10 -> 3;
+        default -> throw new Exception("The number must be between 1 and 10");
     }
-    case 7, 8, 9 -> {
-        System.out.println(2);
-        yield 2;
-    }
-    case 10 -> 3;
-    default -> throw new Exception("The number must be between 1 and 10");
-}
-~~~
+    ~~~
+
 2. Reescribe la siguiente declaracion switch como si una expresion switch.
-~~~java
-private enum DaysOfTheWeek {MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY}
+
+    ~~~java
+    class Main {
+
+        public static void main(String[] args) {
+            Scanner scanner = new Scanner(System.in);
+            int numberOfMonth = scanner.nextInt();
+
+            String month = switch (numberOfMonth) {
+                case 1 -> "January";
+                case 2 -> "February";
+                case 3 -> "March";
+                case 4 -> "April";
+                case 5 -> "May";
+                case 6 -> "June";
+                default -> "error!";
+            };
+
+            System.out.println(month);
+        }
+    }
+    ~~~
+
+3. Reescriba la declaracion switch como una expresion switch.
+
+    ~~~java
+    enum DaysOfTheWeek { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY }
+
+    class Main {
+        public static void main(String[] args) {
+            Scanner scanner = new Scanner(System.in);
+            DaysOfTheWeek day = DaysOfTheWeek.valueOf(scanner.next());
+            int numLetters = switch (day) {
+                case MONDAY, FRIDAY, SUNDAY -> 6;
+                case TUESDAY -> 7;
+                case THURSDAY, SATURDAY -> 8;
+                case WEDNESDAY -> 9;
+                default -> throw new IllegalStateException("Invalid day: " + day);
+            };
+            System.out.println(numLetters);
+        }
+    }
+    ~~~
+
+4. Cual de las declaraciones son invalidas?
+
+    ~~~java
+    int numberOfHamburgersToEat = switch (howHungryAmI) {
+        case 1, 2, 3 -> 0; // VALIDO
+        case 4, 5, 6 -> { // VALIDO
+            yield 1;
+        }
+        case 7, 8, 9 -> { // VALIDO
+            System.out.println(2);
+            yield 2;
+        }
+        case 10 -> { // INVALIDO
+            numberOfHamburgersToEat = 3;
+            break;
+        }
+        default -> throw new Exception("The number must be between 1 and 10");
+    }
+    ~~~
+
+5. Por que el siguiente codigo no compilara?
+
+    ~~~java
+    int howHungryAmI = 0;
+
+    int numberOfHamburgersToEat = switch (howHungryAmI) {
+        case 1, 2, 3 -> 0;
+        case 4, 5, 6 -> 1;
+        case 7, 8, 9 -> 2;
+        case 10 -> 3;
+    };
+
+    // Los valores de entrada no son exhaustivos
+    ~~~
+
+6. Que ventajas ofrecen las expresiones switch en comparacion con las sentencias switch?
+
+    - El codigo es menos propenso a errores
+    - El codigo es mas conciso y mas facil de leer
+
+7. Reescribe el codigo como una expresion switch.
+
+    ~~~java
+    enum Seasons { SPRING, SUMMER, AUTUMN, WINTER }
+
+    class Main {
+        public static void main(String[] args) {
+            Scanner scanner = new Scanner(System.in);
+
+            Seasons season = Seasons.valueOf(scanner.nextLine());
+
+            int temperature = switch (season) {
+                case SPRING, AUTUMN -> 20;
+                case SUMMER -> 37;
+                case WINTER -> 1;
+                default -> throw new IllegalStateException("Invalid number of Seasons.");
+            };
+
+            System.out.println(temperature);
+        }
+    }
+    ~~~
+
+8. Complete el codigo para que arroje una excepcion para un caso por defecto.
+
+    ~~~java
+    int tasteValue = switch (taste) {
+        case SUGAR, PIZZA, CHOCOLATE -> 10;
+        case MEATBALLS, STEAK -> 7;
+        case BROCCOLI -> 4;
+        case DIRT -> 1;
+        default -> throw new Exception("Reminder: please add your new items to a case statement.");
+    };
+    ~~~
